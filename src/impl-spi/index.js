@@ -4,7 +4,7 @@ class NodeSPIImpl {
     return new Promise((resolve, reject) => {
       const SPI = require('spi');
       new SPI.Spi(device,
-        { 'mode': SPI.MODE['MODE_0'] }, 
+        { 'mode': SPI.MODE['MODE_0'] },
         s => {
           s.open();
 
@@ -18,7 +18,9 @@ class NodeSPIImpl {
   read(cmd, length){
     if(length === undefined){ length = 1; }
     return new Promise((resolve, reject) => {
-      const wbuf = Buffer.from([cmd, ...(new Array(length).fill(0))]);
+      const wbuf = Array.isArray(cmd) ?
+        Buffer.from([...cmd, ...(new Array(length - cmd.length).fill(0))]) :
+        Buffer.from([cmd, ...(new Array(length).fill(0))]);
       const rbuf = Buffer.alloc(length + 1);
       this.spi.transfer(wbuf, rbuf, (device, buf) => {
         //const temp = Buffer.alloc(1);
@@ -31,7 +33,7 @@ class NodeSPIImpl {
   }
 
   write(cmd, buffer){
-    return new Promise((resolve, reject) => { 
+    return new Promise((resolve, reject) => {
       const wbuf = Buffer.from([cmd, buffer]);
       this.spi.write(wbuf, buf => {
         resolve(buf);
