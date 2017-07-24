@@ -2,18 +2,21 @@
   "name": "rasbus",
   "version": "1.0.0",
   "description": "",
-  "main": "rasbus.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "src/rasbus.js",
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/johntalton/rasbus.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/johntalton/rasbus/issues"
   },
-  "homepage": "https://github.com/johntalton/rasbus#readme"
+  "homepage": "https://github.com/johntalton/rasbus#readme",
+  "dependencies": {
+    "pi-spi": "^1.0.2",
+    "spi": "^0.2.0",
+    "spi-device": "^0.2.6"
+  }
 }
