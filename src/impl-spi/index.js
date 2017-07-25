@@ -1,6 +1,14 @@
+function _writeMask(value){ return value & ~0x80; }
+
+function _idToDevice(id) {
+  return '/dev/spidev0.' + id;
+}
 
 class NodeSPIImpl {
   static init(device) {
+    if(Number.isInteger(device)) {
+      devcie = _idToDevcie(devcie);
+    }
     return new Promise((resolve, reject) => {
       const SPI = require('spi');
       new SPI.Spi(device,
@@ -34,7 +42,7 @@ class NodeSPIImpl {
 
   write(cmd, buffer){
     return new Promise((resolve, reject) => {
-      const wbuf = Buffer.from([cmd, buffer]);
+      const wbuf = Buffer.from([_writeMask(cmd), buffer]);
       this.spi.write(wbuf, buf => {
         resolve(buf);
       });
