@@ -20,6 +20,10 @@ class I2CImpl {
     });
   }
 
+  get name() {
+    return 'i2c:' + this.bus.device;
+  }
+
   read(cmd, length) {
     if(length === undefined) { length = 1; }
     return new Promise((resolve, reject) => {

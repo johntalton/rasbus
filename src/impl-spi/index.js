@@ -6,21 +6,27 @@ function _idToDevice(id) {
 
 class NodeSPIImpl {
   static init(device) {
-    if(Number.isInteger(device)) {
-      devcie = _idToDevcie(devcie);
+    if(Number.isInteger(parseInt(device))) {
+      device = _idToDevice(device);
     }
     return new Promise((resolve, reject) => {
       const SPI = require('spi');
+      // console.log('constrcut', device);
       new SPI.Spi(device,
         { 'mode': SPI.MODE['MODE_0'] },
         s => {
-          s.open();
+          const ret = s.open();
+          console.log('open returned:', ret);
 
           const foo = new NodeSPIImpl();
           foo.spi = s;
           resolve(foo);
         });
     });
+  }
+
+  get name() {
+    return 'spi:' + this.spi.device;
   }
 
   read(cmd, length){

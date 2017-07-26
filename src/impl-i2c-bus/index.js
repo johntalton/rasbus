@@ -19,6 +19,10 @@ class I2CBusImpl {
     });
   }
 
+  get name() {
+    return 'i2c-bus:' + this.i2c.device;
+  }
+
   read(cmd, length){
     if(length === undefined){ length = 1; }
     return new Promise((resolve, reject) => {
