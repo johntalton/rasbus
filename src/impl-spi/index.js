@@ -37,11 +37,11 @@ class NodeSPIImpl {
         Buffer.from([cmd, ...(new Array(length).fill(0))]);
       const rbuf = Buffer.alloc(length + 1);
       this.spi.transfer(wbuf, rbuf, (device, buf) => {
-        //const temp = Buffer.alloc(1);
-        //buf.copy(temp, 0, 1);
-        //console.log('the end ', buf, temp);
-        //resolve(temp);
-        resolve(buf);
+        //const out = Buffer.from(buf, 1); // trim first byte
+        const out = Buffer.alloc(buf.length - 1);
+        buf.copy(out, 0, 1);
+        console.log('read', buf, out);
+        resolve(out);
       });
     });
   }

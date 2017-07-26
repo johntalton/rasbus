@@ -29,12 +29,7 @@ class I2CImpl {
       // console.log('read', cmd, length);
       this.bus.readBytes(cmd, length, function(err, result) {
         if(err) { reject(err); return; }
-
-        // console.log('read2', err, result);
-        // bug fix for the way spi returns, should move into spi code
-        const out = Buffer.concat([Buffer.from([0xFF]), result]);
-
-        resolve(out);
+        resolve(result);
       });
     });
   }

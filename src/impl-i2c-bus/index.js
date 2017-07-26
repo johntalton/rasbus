@@ -1,9 +1,6 @@
-const address = 0x77;
-
-
 
 class I2CBusImpl {
-  static init(device) {
+  static init(device, address) {
     if(!Number.isInteger(parseInt(device))) {
       throw new Error('not a number ' + device);
     }
@@ -14,6 +11,7 @@ class I2CBusImpl {
         if(err){ reject(err); return; }
         const foo = new I2CBusImpl();
         foo.i2c = i2c1;
+        foo._address = address;
         resolve(foo);
       });
     });
@@ -28,17 +26,20 @@ class I2CBusImpl {
   read(cmd, length){
     if(length === undefined){ length = 1; }
     return new Promise((resolve, reject) => {
-      // console.log('read', cmd, length);
-      this.i2c.readByte(address, cmd, function(err, byte) {
+      console.log('read', cmd, length);
+      const rxBuf = Buffer.alloc(length);
+      this.i2c.readI2cBlock(this._address, cmd, length, rxBuf, function(err, resultlength, bytes) {
+        console.log(err, bytes, typeof bytes);
         if(err) { reject(err); return; }
-        resolve(Buffer.from([0xFF, byte]));
+        resolve(bytes);
       });
     });
   }
 
   write(cmd, buffer){
     return new Promise((resolve, reject) => {
-      this.i2c.writeByte(address, cmd, buffer, function(err){
+      const txByte = Array.isArray(buffer) ? buffer[0] : buffer;
+      this.i2c.writeByte(this._address, cmd, txByte, function(err){
         if(err){ reject(err); return; }
         resolve([]);
       });
