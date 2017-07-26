@@ -20,7 +20,9 @@ class I2CBusImpl {
   }
 
   get name() {
-    return 'i2c-bus:' + this.i2c.device;
+    // console.log(this.i2c);
+    const prefix = '/dev/i2c-'; // taken from i2c-bus github page // TODO import
+    return 'i2c-bus:' + prefix + this.i2c._busNumber;
   }
 
   read(cmd, length){

@@ -1,13 +1,11 @@
 
-let address = 0x77;
-
 function _idToDevice(id) {
   return '/dev/i2c-' + id;
 }
 
 class I2CImpl {
-  static init (device) {
-    if(Number.isInteger(device)) {
+  static init (device, address) {
+    if(Number.isInteger(parseInt(device))) {
       device = _idToDevice(device);
     }
 
@@ -21,17 +19,18 @@ class I2CImpl {
   }
 
   get name() {
-    return 'i2c:' + this.bus.device;
+    // console.log(this.bus);
+    return 'i2c:' + this.bus.options.device + ':' + '0x' + this.bus.address.toString(16);
   }
 
   read(cmd, length) {
     if(length === undefined) { length = 1; }
     return new Promise((resolve, reject) => {
-      console.log('read', cmd, length);
+      // console.log('read', cmd, length);
       this.bus.readBytes(cmd, length, function(err, result) {
         if(err) { reject(err); return; }
 
-        console.log('read2', err, result);
+        // console.log('read2', err, result);
         // bug fix for the way spi returns, should move into spi code
         const out = Buffer.concat([Buffer.from([0xFF]), result]);
 
@@ -42,9 +41,10 @@ class I2CImpl {
 
   write(cmd, buffer) {
     return new Promise((resolve, reject) => {
-      console.log('write', cmd, buffer);
-      this.bus.writeBytes(cmd, buffer, function(err){
-        console.log('write2', err);
+      // console.log('write', cmd, buffer);
+      const txAry = Array.isArray(buffer) ? buffer : [buffer];
+      this.bus.writeBytes(cmd, txAry, function(err){
+        // console.log('write2', err);
         if(err){ console.log('reject!'); reject(err); return; }
         resolve([]);
       });
