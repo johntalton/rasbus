@@ -40,7 +40,7 @@ class NodeSPIImpl {
         //const out = Buffer.from(buf, 1); // trim first byte
         const out = Buffer.alloc(buf.length - 1);
         buf.copy(out, 0, 1);
-        console.log('read', buf, out);
+        //console.log('read', buf, out);
         resolve(out);
       });
     });

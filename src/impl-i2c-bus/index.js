@@ -26,10 +26,10 @@ class I2CBusImpl {
   read(cmd, length){
     if(length === undefined){ length = 1; }
     return new Promise((resolve, reject) => {
-      console.log('read', cmd, length);
+      // console.log('read', cmd, length);
       const rxBuf = Buffer.alloc(length);
       this.i2c.readI2cBlock(this._address, cmd, length, rxBuf, function(err, resultlength, bytes) {
-        console.log(err, bytes, typeof bytes);
+        // console.log(err, bytes, typeof bytes);
         if(err) { reject(err); return; }
         resolve(bytes);
       });
