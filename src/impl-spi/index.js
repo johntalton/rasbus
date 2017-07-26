@@ -12,11 +12,11 @@ class NodeSPIImpl {
     return new Promise((resolve, reject) => {
       const SPI = require('spi');
       // console.log('constrcut', device);
-      new SPI.Spi(device,
+      const dev = new SPI.Spi(device,
         { 'mode': SPI.MODE['MODE_0'] },
         s => {
           const ret = s.open();
-          console.log('open returned:', ret);
+          // console.log('open returned:', ret);
 
           const foo = new NodeSPIImpl();
           foo.spi = s;
