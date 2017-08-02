@@ -29,8 +29,10 @@ class PiSPIImpl {
       this.spi.transfer(txBuf, length + 1, function(e, buffer){
         if(e){ reject(e); }
         // strip first byte
-        const out = Buffer.from(buffer, 1);
-        resolve(cout);
+        //const out = Buffer.from(buffer, 1);
+        const out = Buffer.alloc(buffer.length - 1);
+        buffer.copy(out, 0, 1);
+        resolve(out);
       });
     });
   }

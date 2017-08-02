@@ -37,9 +37,22 @@ class I2CBusImpl {
   }
 
   write(cmd, buffer){
+    if(buffer === undefined) { return this.writeSpecial(cmd); }
+
     return new Promise((resolve, reject) => {
       const txByte = Array.isArray(buffer) ? buffer[0] : buffer;
       this.i2c.writeByte(this._address, cmd, txByte, function(err){
+        if(err){ reject(err); return; }
+        resolve([]);
+      });
+    });
+  }
+
+  writeSpecial(special) {
+    console.log('write special 0x' + special.toString(16));
+    return new Promise((resolve, reject) => {
+      this.i2c.sendByte(this._address, special, function(err) {
+        // console.log('here', err);
         if(err){ reject(err); return; }
         resolve([]);
       });
