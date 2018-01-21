@@ -28,6 +28,7 @@ class I2CImpl {
     return new Promise((resolve, reject) => {
       // console.log('read', cmd, length);
       this.bus.readBytes(cmd, length, function(err, result) {
+        //console.log(err);
         if(err) { reject(err); return; }
         resolve(result);
       });
@@ -38,8 +39,8 @@ class I2CImpl {
     if(buffer === undefined) { return this.writeSpecial(cmd); }
 
     return new Promise((resolve, reject) => {
-      // console.log('write', cmd, buffer);
-      const txAry = Array.isArray(buffer) ? buffer : [buffer];
+      const txAry = (Array.isArray(buffer) || Buffer.isBuffer(buffer)) ? buffer : [buffer];
+      //console.log('write', cmd, buffer, txAry);
       this.bus.writeBytes(cmd, txAry, function(err){
         // console.log('write2', err);
         if(err){ console.log('reject!'); reject(err); return; }
