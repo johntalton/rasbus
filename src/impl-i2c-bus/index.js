@@ -23,6 +23,15 @@ class I2CBusImpl {
     return 'i2c-bus:' + prefix + this.i2c._busNumber;
   }
 
+  close() {
+    return new Promise((resolve, reject) => {
+      this.i2c.close(err => {
+        if(err) { reject(err); return; }
+        resolve();
+      });
+    });
+  }
+
   read(cmd, length){
     if(length === undefined){ length = 1; }
     return new Promise((resolve, reject) => {

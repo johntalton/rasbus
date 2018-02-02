@@ -23,6 +23,10 @@ class I2CImpl {
     return 'i2c:' + this.bus.options.device + ':' + '0x' + this.bus.address.toString(16);
   }
 
+  close() {
+    return Promise.resolve(this.bus.close());
+  }
+
   read(cmd, length) {
     if(length === undefined) { length = 1; }
     return new Promise((resolve, reject) => {
@@ -40,9 +44,9 @@ class I2CImpl {
 
     return new Promise((resolve, reject) => {
       const txAry = (Array.isArray(buffer) || Buffer.isBuffer(buffer)) ? buffer : [buffer];
-      //console.log('write', cmd, buffer, txAry);
+      // console.log('write', cmd, buffer, txAry);
       this.bus.writeBytes(cmd, txAry, function(err){
-        // console.log('write2', err);
+        //  console.log('write2', err);
         if(err){ console.log('reject!'); reject(err); return; }
         resolve([]);
       });
