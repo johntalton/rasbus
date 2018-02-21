@@ -5,17 +5,18 @@ function _idToDevice(id) {
 
 class I2CImpl {
   static init (device, address) {
+    let path = device;
     if(Number.isInteger(parseInt(device))) {
-      device = _idToDevice(device);
+      path = _idToDevice(device);
     }
 
-    return new Promise((resolve, reject) => {
-      const i2c = require('i2c');
-      const bus = new i2c(address, { device: device, debug: false });
-      const foo = new I2CImpl();
-      foo.bus = bus;
-      resolve(foo);
-    });
+    if(I2CImpl.i2c === undefined) { console.log('require i2c lib'); I2CImpl.i2c = require('i2c'); }
+    const bus = new I2CImpl.i2c(address, { device: path, debug: false });
+    return Promise.resolve(new I2CImpl(bus));
+  }
+
+  constructor(bus) {
+    this.bus = bus;
   }
 
   get name() {

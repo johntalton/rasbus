@@ -6,6 +6,7 @@ class Rasbus {
       case 'pispi': return Rasbus.pispi; break;
       case 'spi': return Rasbus.spi; break;
 
+      case 'raspii2c': return Rasebus.raspii2c; break;
       case 'i2cbus': return Rasbus.i2cbus; break;
       case 'i2c': return Rasbus.i2c; break;
 
@@ -15,11 +16,11 @@ class Rasbus {
   }
 }
 
-Rasbus.pispi = require('./impl-pi-spi'),
-Rasbus.spi = require('./impl-spi'),
+Rasbus.pispi = require('./impl-pi-spi');
+Rasbus.spi = require('./impl-spi');
 
-Rasbus.i2c = require('./impl-i2c'),
-Rasbus.i2cbus = require('./impl-i2c-bus')
-
+Rasbus.i2c = require('./impl-i2c');
+Rasbus.i2cbus = require('./impl-i2c-bus');
+//Rasbus.raspii2c = require('./impl-i2c-raspii2c');
 
 module.exports = Rasbus;

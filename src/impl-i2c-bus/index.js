@@ -7,14 +7,16 @@ class I2CBusImpl {
 
     return new Promise((resolve, reject) => {
       const i2c = require('i2c-bus');
-      const i2c1 = i2c.open(device, function(err){
+      const bus = i2c.open(device, function(err){
         if(err){ reject(err); return; }
-        const foo = new I2CBusImpl();
-        foo.i2c = i2c1;
-        foo._address = address;
-        resolve(foo);
+        resolve(new I2CBusImpl(bus, address));
       });
     });
+  }
+
+  constructor(bus, address) {
+    this.i2c = bus;
+    this._address = address;
   }
 
   get name() {
@@ -58,7 +60,7 @@ class I2CBusImpl {
   }
 
   writeSpecial(special) {
-    console.log('write special 0x' + special.toString(16));
+    //console.log('write special 0x' + special.toString(16));
     return new Promise((resolve, reject) => {
       this.i2c.sendByte(this._address, special, function(err) {
         // console.log('here', err);
