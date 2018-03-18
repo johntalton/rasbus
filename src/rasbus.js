@@ -11,7 +11,7 @@ class Rasbus {
       case 'i2c': return Rasbus.i2c; break;
 
       default:
-        throw Error('unknown bus name', name);
+        throw Error('unknown bus name: ' + name);
     }
   }
 }
