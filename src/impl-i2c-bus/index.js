@@ -50,9 +50,23 @@ class I2CBusImpl {
   write(cmd, buffer){
     if(buffer === undefined) { return this.writeSpecial(cmd); }
 
+    //console.log(this.i2c.i2cFuncsSync());
+
+    let txAry = buffer;
+    if(!Buffer.isBuffer(txAry)) {
+      txAry = Array.isArray(txAry) ? Buffer.from(txAry) : Buffer.from([txAry]);
+    }
+    const txLen = txAry.length;
+    //console.log(this._address, '0x' + cmd.toString(16), txLen, txAry);
+
+    //console.log('write');
+    //console.log(' ---> 0x', cmd.toString(16), txAry);
+
     return new Promise((resolve, reject) => {
-      const txByte = Array.isArray(buffer) ? buffer[0] : buffer;
-      this.i2c.writeByte(this._address, cmd, txByte, function(err){
+      if(txLen > 32) { reject(Error('max 32 lenth')); }
+      this.i2c.writeI2cBlock(this._address, cmd, txLen, txAry, function(err){
+      //const txByte = Array.isArray(buffer) ? buffer[0] : buffer;
+      //this.i2c.writeByte(this._address, cmd, txByte, function(err){
         if(err){ reject(err); return; }
         resolve([]);
       });

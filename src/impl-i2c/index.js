@@ -10,7 +10,7 @@ class I2CImpl {
       path = _idToDevice(device);
     }
 
-    if(I2CImpl.i2c === undefined) { console.log('require i2c lib'); I2CImpl.i2c = require('i2c'); }
+    if(I2CImpl.i2c === undefined) { I2CImpl.i2c = require('i2c'); }
     const bus = new I2CImpl.i2c(address, { device: path, debug: false });
     return Promise.resolve(new I2CImpl(bus));
   }
@@ -44,8 +44,11 @@ class I2CImpl {
     if(buffer === undefined) { return this.writeSpecial(cmd); }
 
     return new Promise((resolve, reject) => {
-      const txAry = (Array.isArray(buffer) || Buffer.isBuffer(buffer)) ? buffer : [buffer];
-      // console.log('write', cmd, buffer, txAry);
+      let txAry = buffer;
+      if(!Array.isArray(txAry)) {
+        if(!Buffer.isBuffer(txAry)) { txAry = [txAry]; }
+      }
+      //console.log('write', cmd.toString(16), txAry);
       this.bus.writeBytes(cmd, txAry, function(err){
         //  console.log('write2', err);
         if(err){ console.log('reject!'); reject(err); return; }
