@@ -5,8 +5,9 @@
  **/
 class Rasbus {
   static byname(name) {
-    const bus = Rasbus.busMap.find(item => item.name === name.toLowerCase());
-    if(bus === undefined) { throw Error('unknown bus name: ' + name); }
+    const normalName = name.replace('-', '').toLowerCase();
+    const bus = Rasbus.busMap.find(item => item.name === normalName);
+    if(bus === undefined) { throw Error('unknown bus name: ' + normalName); }
     if(bus._impl === undefined) {
       bus._impl = require(bus.impl);
     }
@@ -27,8 +28,9 @@ Rasbus.busMap = [
   { name: 'i2cbus', type: 'i2c', impl: './impl-i2c-bus' },
   { name: 'i2c',    type: 'i2c', impl: './impl-i2c' },
   // SPI
-  { name: 'pispi',  type: 'spi', impl: './impl-pi-spi' },
-  { name: 'spi',    type: 'spi', impl: './impl-spi' },
+  { name: 'spidevice', type: 'spi', impl: './impl-spi-device' }, // still updated
+  { name: 'pispi',  type: 'spi', impl: './impl-pi-spi' }, // old
+  { name: 'spi',    type: 'spi', impl: './impl-spi' }, // oldest
 ];
 
 
