@@ -31,7 +31,7 @@ class I2CBusImpl {
 
   deviceId(addr) {
     const address = (addr !== undefined) ? addr : this._address;
-    console.log('device id for ', address.toString(16));
+    //console.log('device id for ', address.toString(16));
     return new Promise((resolve, reject) => {
       this.i2c.deviceId(address, (err, m, p) => {
         if(err) { reject(err); return; }
