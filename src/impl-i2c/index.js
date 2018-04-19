@@ -1,3 +1,4 @@
+"use strict";
 
 function _idToDevice(id) {
   return '/dev/i2c-' + id;
@@ -24,6 +25,10 @@ class I2CImpl {
     return 'i2c:' + this.bus.options.device + ':' + '0x' + this.bus.address.toString(16);
   }
 
+  deviceId(addr) {
+    return Promise.reject(Error('unsupported'))l
+  }
+
   close() {
     return Promise.resolve(this.bus.close());
   }
@@ -34,6 +39,15 @@ class I2CImpl {
       // console.log('read', cmd, length);
       this.bus.readBytes(cmd, length, function(err, result) {
         //console.log(err);
+        if(err) { reject(err); return; }
+        resolve(result);
+      });
+    });
+  }
+
+  readSpecial(length) {
+    return new Promise((resolve, reject) => {
+      this.bus.read(length, (err, result) => {
         if(err) { reject(err); return; }
         resolve(result);
       });
@@ -65,6 +79,10 @@ class I2CImpl {
       });
     });
   }
+
+
+  readBuffer(length) { return Promise.reject(Error('unimplemented')); }
+  writeBuffer(buf) { return Promise.reject(Error('unimplemented')); }
 }
 
 module.exports = I2CImpl;
