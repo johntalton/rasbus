@@ -15,10 +15,9 @@
   },
   "homepage": "https://github.com/johntalton/rasbus#readme",
   "dependencies": {
-    "i2c": "^0.2.3",
-    "i2c-bus": "^1.2.2",
+    "i2c-bus": "^3.2.0",
+    "npm-check-updates": "^2.14.2",
     "pi-spi": "^1.0.2",
-    "spi": "^0.2.0",
-    "spi-device": "^0.2.6"
+    "spi-device": "^2.0.2"
   }
 }

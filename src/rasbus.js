@@ -26,11 +26,11 @@ Rasbus.busMap = [
   // I2C
   // { name: 'raspii2c', type: 'i2c', impl: './impl-i2c-raspii2c' },
   { name: 'i2cbus', type: 'i2c', impl: './impl-i2c-bus' },
-  { name: 'i2c',    type: 'i2c', impl: './impl-i2c' },
+  //{ name: 'i2c',    type: 'i2c', impl: './impl-i2c' },  // not keeping pace with NAN
   // SPI
   { name: 'spidevice', type: 'spi', impl: './impl-spi-device' }, // still updated
   { name: 'pispi',  type: 'spi', impl: './impl-pi-spi' }, // old
-  { name: 'spi',    type: 'spi', impl: './impl-spi' }, // oldest
+  //{ name: 'spi',    type: 'spi', impl: './impl-spi' }, // NAN out of sync // oldest
 ];
 
 
