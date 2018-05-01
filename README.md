@@ -15,7 +15,10 @@ This allows for testing the implementations robustness and other qualities,
 but also to test higher level code against a wide set of known libs.  
 Allowing for high level code to guard against specific implementation bug / quirks.
 
-## byname()
+### `byname(name)`
 
-The static `byname` method will return each implementation by npm name (with or without dashes)
+static method will return each implementation by npm name (with or without dashes)
 
+### `names(type)`
+
+static method returns all known bus implementation names (filtered by type).  Usefull for command line auto complete of bus names etc.
