@@ -32,13 +32,17 @@ class SpiDeviceImpl {
   }
 
   read(cmd, length) {
+    //console.log('read', cmd, length);
     if(length === undefined){ length = 1; }
 
+    // explod cmd and pad out length for receive
+    const sb = Buffer.from([...cmd, ...(new Array(length))]);
+
     const messages = [{
-      sendBuffer: Buffer.from([cmd, ...(new Array(length))]),
-      byteLength: length + 1,
-      receiveBuffer: Buffer.alloc(length + 1),
-      speedHz: 20000 // 125000000
+      sendBuffer: sb,
+      byteLength: sb.length,
+      receiveBuffer: Buffer.alloc(sb.length),
+      speedHz: 20000 // 125000000 // todo move this to .init
     }];
 
     return new Promise((resolve, reject) => {
