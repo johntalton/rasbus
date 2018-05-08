@@ -37,6 +37,7 @@ class PiSPIImpl {
   }
 
   write(cmd, buffer) {
+    console.log(cmd, buffer);
     return new Promise((resolve, reject) => {
       const txBuf = Buffer.from([_writeMask(cmd), buffer]);
       this.spi.write(txBuf, (e, buf) =>{

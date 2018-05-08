@@ -1,23 +1,26 @@
 
 //function _writeMask(value){ return value & ~0x80; }
 
+const CLOCKHZ = 5 * 1000 * 1000; // 125000000
+
 class SpiDeviceImpl {
   static init(...id) {
     //console.log('hi 👍');
 
     return new Promise((resolve, reject) => {
-      if(id.length !== 2) { throw Error('incorrect parameters ' + id); }
+      if(id.length !== 2) { reject(Error('incorrect parameters ' + id)); }
       const spiDev = require('spi-device'); // eslint-disable-line global-require
 
-      const device = spiDev.open(id[0], id[1], err => {
+      const device = spiDev.open(...id, err => {
         if(err) { reject(err); return; }
-
-        const impl = new SpiDeviceImpl();
-        impl._name = 'spi-device:' + id.join(','); // construct here as driver is sealed and we cant get from it
-        impl._bus = device;
-        resolve(impl);
+        resolve(new SpiDeviceImpl(device, id));
       });
     });
+  }
+
+  constructor(bus, id) {
+    this._bus = bus;
+    this._name = 'spi-device:' + id.join('.');
   }
 
   get name() {
@@ -25,14 +28,17 @@ class SpiDeviceImpl {
   }
 
   close() {
+    console.log('closing spi-device bus');
     return new Promise(resolve => {
       this._bus.close(() => { resolve(); });
     });
   }
 
-  read(cmd, len) {
+  read(cmdbuf, len) {
     //console.log('read', cmd, length);
     const length = len !== undefined ? len : 1;
+
+    const cmd = Array.isArray(cmdbuf) ? cmdbuf : [cmdbuf];
 
     // explod cmd and pad out length for receive
     const sb = Buffer.from([...cmd, ...new Array(length)]);
@@ -41,7 +47,7 @@ class SpiDeviceImpl {
       sendBuffer: sb,
       byteLength: sb.length,
       receiveBuffer: Buffer.alloc(sb.length),
-      speedHz: 20000 // 125000000 // todo move this to .init
+      speedHz: CLOCKHZ
     }];
 
     return new Promise((resolve, reject) => {
@@ -64,11 +70,12 @@ class SpiDeviceImpl {
       sendBuffer: Buffer.from([cmd, buffer]),
       byteLength: length + 1,
       receiveBuffer: rbuf,
-      speedHz: 20000 // 125000000
+      speedHz: CLOCKHZ
     }];
 
     return new Promise((resolve, reject) => {
       this._bus.transfer(messages, (err, msg) => {
+        //console.log(err, msg);
         if(err) { reject(err); return; }
         const out = Buffer.alloc(length);
         msg[0].receiveBuffer.copy(out, 0, 1); // trim first byte
