@@ -5,13 +5,14 @@ const CLOCKHZ = 5 * 1000 * 1000; // 125000000
 
 class SpiDeviceImpl {
   static init(...id) {
-    //console.log('hi 👍');
+    console.log('hi 👍', id);
 
     return new Promise((resolve, reject) => {
       if(id.length !== 2) { reject(Error('incorrect parameters ' + id)); }
       const spiDev = require('spi-device'); // eslint-disable-line global-require
 
-      const device = spiDev.open(...id, err => {
+      // explod for id doesn't work with cb params
+      const device = spiDev.open(id[0], id[1], err => {
         if(err) { reject(err); return; }
         resolve(new SpiDeviceImpl(device, id));
       });
