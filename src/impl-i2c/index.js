@@ -1,17 +1,18 @@
-"use strict";
 
 function _idToDevice(id) {
   return '/dev/i2c-' + id;
 }
 
+const BASE_10 = 10;
+
 class I2CImpl {
   static init (device, address) {
     let path = device;
-    if(Number.isInteger(parseInt(device))) {
+    if(Number.isInteger(parseInt(device, BASE_10))) {
       path = _idToDevice(device);
     }
 
-    if(I2CImpl.i2c === undefined) { I2CImpl.i2c = require('i2c'); }
+    if(I2CImpl.i2c === undefined) { I2CImpl.i2c = require('i2c'); } // eslint-disable-line global-require
     const bus = new I2CImpl.i2c(address, { device: path, debug: false });
     return Promise.resolve(new I2CImpl(bus));
   }
@@ -26,18 +27,20 @@ class I2CImpl {
   }
 
   deviceId(addr) {
-    return Promise.reject(Error('unsupported'))l
+    if(this.supportsDeviceId !== undefined) { console.log('realy?'); }
+    return Promise.reject(Error('unsupported'));
   }
 
   close() {
     return Promise.resolve(this.bus.close());
   }
 
-  read(cmd, length) {
-    if(length === undefined) { length = 1; }
+  read(cmd, len) {
+    const length = len !== undefined ? len : 1;
+
     return new Promise((resolve, reject) => {
       // console.log('read', cmd, length);
-      this.bus.readBytes(cmd, length, function(err, result) {
+      this.bus.readBytes(cmd, length, (err, result) => {
         //console.log(err);
         if(err) { reject(err); return; }
         resolve(result);
@@ -63,7 +66,7 @@ class I2CImpl {
         if(!Buffer.isBuffer(txAry)) { txAry = [txAry]; }
       }
       //console.log('write', cmd.toString(16), txAry);
-      this.bus.writeBytes(cmd, txAry, function(err){
+      this.bus.writeBytes(cmd, txAry, err => {
         //  console.log('write2', err);
         if(err){ console.log('reject!'); reject(err); return; }
         resolve([]);
@@ -73,7 +76,7 @@ class I2CImpl {
 
   writeSpecial(special) {
     return new Promise((resolve, reject) => {
-      this.bus.write(Buffer.from([special]), function(err) {
+      this.bus.write(Buffer.from([special]), err => {
         if(err) { reject(err); }
         resolve([]);
       });

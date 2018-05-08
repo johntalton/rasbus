@@ -1,6 +1,5 @@
-"use strict";
 
-function _writeMask(value){ return value & ~0x80; }
+//function _writeMask(value){ return value & ~0x80; }
 
 class SpiDeviceImpl {
   static init(...id) {
@@ -8,7 +7,7 @@ class SpiDeviceImpl {
 
     return new Promise((resolve, reject) => {
       if(id.length !== 2) { throw Error('incorrect parameters ' + id); }
-      const spiDev = require('spi-device');
+      const spiDev = require('spi-device'); // eslint-disable-line global-require
 
       const device = spiDev.open(id[0], id[1], err => {
         if(err) { reject(err); return; }
@@ -26,17 +25,17 @@ class SpiDeviceImpl {
   }
 
   close() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this._bus.close(() => { resolve(); });
     });
   }
 
-  read(cmd, length) {
+  read(cmd, len) {
     //console.log('read', cmd, length);
-    if(length === undefined){ length = 1; }
+    const length = len !== undefined ? len : 1;
 
     // explod cmd and pad out length for receive
-    const sb = Buffer.from([...cmd, ...(new Array(length))]);
+    const sb = Buffer.from([...cmd, ...new Array(length)]);
 
     const messages = [{
       sendBuffer: sb,

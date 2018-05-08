@@ -1,14 +1,15 @@
-"use strict";
+
+const BASE_10 = 10;
 
 class I2CBusImpl {
   static init(device, address) {
-    if(!Number.isInteger(parseInt(device))) {
+    if(!Number.isInteger(parseInt(device, BASE_10))) {
       throw new Error('not a number ' + device);
     }
 
     return new Promise((resolve, reject) => {
-      const i2c = require('i2c-bus');
-      const bus = i2c.open(device, function(err){
+      const i2c = require('i2c-bus'); // eslint-disable-line global-require
+      const bus = i2c.open(device, err => {
         if(err){ reject(err); return; }
 
 //console.log(bus.i2cFuncsSync());
@@ -30,7 +31,7 @@ class I2CBusImpl {
   }
 
   deviceId(addr) {
-    const address = (addr !== undefined) ? addr : this._address;
+    const address = addr !== undefined ? addr : this._address;
     //console.log('device id for ', address.toString(16));
     return new Promise((resolve, reject) => {
       this.i2c.deviceId(address, (err, m, p) => {
@@ -49,12 +50,13 @@ class I2CBusImpl {
     });
   }
 
-  read(cmd, length){
-    if(length === undefined){ length = 1; }
+  read(cmd, len){
+    const length = len !== undefined ? len : 1;
+
     return new Promise((resolve, reject) => {
       // console.log('read', cmd, length);
       const rxBuf = Buffer.alloc(length);
-      this.i2c.readI2cBlock(this._address, cmd, length, rxBuf, function(err, resultlength, bytes) {
+      this.i2c.readI2cBlock(this._address, cmd, length, rxBuf, (err, resultlength, bytes) => {
         // console.log(err, bytes, typeof bytes);
         if(err) { reject(err); return; }
         resolve(bytes);
@@ -91,7 +93,7 @@ class I2CBusImpl {
 
     return new Promise((resolve, reject) => {
       if(txLen > 32) { reject(Error('max 32 lenth')); }
-      this.i2c.writeI2cBlock(this._address, cmd, txLen, txAry, function(err){
+      this.i2c.writeI2cBlock(this._address, cmd, txLen, txAry, (err) => {
       //const txByte = Array.isArray(buffer) ? buffer[0] : buffer;
       //this.i2c.writeByte(this._address, cmd, txByte, function(err){
         if(err){ reject(err); return; }
@@ -105,7 +107,7 @@ class I2CBusImpl {
     return new Promise((resolve, reject) => {
       //const buf = Buffer.from([special]);
       //this.i2c.i2cWrite(this._address, buf.length, buf, (err) => {
-      this.i2c.sendByte(this._address, special, function(err) {
+      this.i2c.sendByte(this._address, special, (err) => {
         // console.log('here', err);
         if(err){ reject(err); return; }
         resolve([]);

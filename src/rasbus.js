@@ -1,4 +1,3 @@
-"use strict";
 
 /**
  *
@@ -9,13 +8,13 @@ class Rasbus {
     const bus = Rasbus.busMap.find(item => item.name === normalName);
     if(bus === undefined) { throw Error('unknown bus name: ' + normalName); }
     if(bus._impl === undefined) {
-      bus._impl = require(bus.impl);
+      bus._impl = require(bus.impl); // eslint-disable-line global-require
     }
     return bus._impl;
   }
 
   static names(type) {
-    const filtered = (type === undefined) ?
+    const filtered = type === undefined ?
       Rasbus.busMap :
       Rasbus.busMap.filter(item => item.type === type.toLowerCase());
     return filtered.map(item => item.name);
@@ -29,8 +28,8 @@ Rasbus.busMap = [
   //{ name: 'i2c',    type: 'i2c', impl: './impl-i2c' },  // not keeping pace with NAN
   // SPI
   { name: 'spidevice', type: 'spi', impl: './impl-spi-device' }, // still updated
-  { name: 'pispi',  type: 'spi', impl: './impl-pi-spi' }, // old
-  //{ name: 'spi',    type: 'spi', impl: './impl-spi' }, // NAN out of sync // oldest
+  { name: 'pispi', type: 'spi', impl: './impl-pi-spi' }, // old
+  //{ name: 'spi', type: 'spi', impl: './impl-spi' }, // NAN out of sync // oldest
 ];
 
 

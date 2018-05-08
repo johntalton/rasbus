@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/rasbus.js",
-  "scripts": {},
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint ."
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/johntalton/rasbus.git"
@@ -19,5 +21,8 @@
     "npm-check-updates": "^2.14.2",
     "pi-spi": "^1.0.2",
     "spi-device": "^2.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1"
   }
 }
