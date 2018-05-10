@@ -18,20 +18,16 @@ class PiSPIImpl {
     return Promise.resolve(foo);
   }
 
-  read(cmd, len) {
+  read(cmdbuf, len) {
     const length = len !== undefined ? len : 1;
+    const cmd = Array.isArray(cmdbuf) ? cmdbuf : [cmdbuf];
 
     return new Promise((resolve, reject) => {
-      const txBuf = Array.isArray(cmd) ?
-        Buffer.from(cmd) :
-        Buffer.from([cmd])
-      this.spi.transfer(txBuf, length + 1, (e, buffer) =>{
+      const txBuf = Buffer.from([...cmd, ...new Array(length - cmd.length)]);
+
+      this.spi.transfer(txBuf, length, (e, buffer) =>{
         if(e){ reject(e); }
-        // strip first byte
-        //const out = Buffer.from(buffer, 1);
-        const out = Buffer.alloc(buffer.length - 1);
-        buffer.copy(out, 0, 1);
-        resolve(out);
+        resolve(buffer);
       });
     });
   }

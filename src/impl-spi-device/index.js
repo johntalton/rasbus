@@ -1,19 +1,18 @@
 
 //function _writeMask(value){ return value & ~0x80; }
 
-const CLOCKHZ = 5 * 1000 * 1000; // 125000000
+const CLOCKHZ = 10 * 1000 * 1000; // 125000000
 
 class SpiDeviceImpl {
   static init(...id) {
-    console.log('hi 👍', id);
-
     return new Promise((resolve, reject) => {
       if(id.length !== 2) { reject(Error('incorrect parameters ' + id)); }
       const spiDev = require('spi-device'); // eslint-disable-line global-require
 
       // explod for id doesn't work with cb params
-      const device = spiDev.open(id[0], id[1], err => {
+      const device = spiDev.open(id[0], id[1], { maxSpeedHz: CLOCKHZ}, err => {
         if(err) { reject(err); return; }
+        console.log('hi 👍', ...id);
         resolve(new SpiDeviceImpl(device, id));
       });
     });
@@ -36,13 +35,13 @@ class SpiDeviceImpl {
   }
 
   read(cmdbuf, len) {
-    //console.log('read', cmd, length);
+    console.log('read', cmdbuf, len);
     const length = len !== undefined ? len : 1;
 
     const cmd = Array.isArray(cmdbuf) ? cmdbuf : [cmdbuf];
 
     // explod cmd and pad out length for receive
-    const sb = Buffer.from([...cmd, ...new Array(length)]);
+    const sb = Buffer.from([...cmd, ...new Array(length - cmd.length)]);
 
     const messages = [{
       sendBuffer: sb,
@@ -50,13 +49,13 @@ class SpiDeviceImpl {
       receiveBuffer: Buffer.alloc(sb.length),
       speedHz: CLOCKHZ
     }];
+    console.log('transfer out', messages)
 
     return new Promise((resolve, reject) => {
       this._bus.transfer(messages, (err, msg) => {
+        console.log('transfer', err, msg);
         if(err) { reject(err); return; }
-        const out = Buffer.alloc(length);
-        msg[0].receiveBuffer.copy(out, 0, 1); // trim first byte
-        resolve(out);
+        resolve(msg[0].receiveBuffer);
       });
     });
   }
@@ -78,9 +77,7 @@ class SpiDeviceImpl {
       this._bus.transfer(messages, (err, msg) => {
         //console.log(err, msg);
         if(err) { reject(err); return; }
-        const out = Buffer.alloc(length);
-        msg[0].receiveBuffer.copy(out, 0, 1); // trim first byte
-        resolve(out);
+        resolve(msg[0].receiveBuffer);
       });
     });
 
