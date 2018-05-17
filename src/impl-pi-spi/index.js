@@ -26,18 +26,20 @@ class PiSPIImpl {
       const txBuf = Buffer.from([...cmd, ...new Array(length - cmd.length)]);
 
       this.spi.transfer(txBuf, length, (e, buffer) =>{
-        if(e){ reject(e); }
+        // console.log('read', length, txBuf.length, '=>', e, buffer);
+        if(e){ reject(e); return; }
         resolve(buffer);
       });
     });
   }
 
   write(cmd, buffer) {
-    console.log(cmd, buffer);
+    //console.log(cmd, buffer);
     return new Promise((resolve, reject) => {
       const txBuf = Buffer.from([_writeMask(cmd), buffer]);
       this.spi.write(txBuf, (e, buf) =>{
-        if(e){ reject(e); }
+        // console.log('write', buffer, '=>', e, buf);
+        if(e){ reject(e); return; }
         resolve(buf);
       });
     });
