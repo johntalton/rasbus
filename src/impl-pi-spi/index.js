@@ -18,30 +18,30 @@ class PiSPIImpl {
     return Promise.resolve(foo);
   }
 
-  read(cmd, len) {
-    const length = len !== undefined ? len : 1;
+  read(cmdbuf, len) {
+    const length = len !== undefined ? len + 1 : 2;
+    const cmd = Array.isArray(cmdbuf) ? cmdbuf : [cmdbuf];
 
     return new Promise((resolve, reject) => {
-      const txBuf = Array.isArray(cmd) ?
-        Buffer.from(cmd) :
-        Buffer.from([cmd])
-      this.spi.transfer(txBuf, length + 1, (e, buffer) =>{
-        if(e){ reject(e); }
-        // strip first byte
-        //const out = Buffer.from(buffer, 1);
-        const out = Buffer.alloc(buffer.length - 1);
-        buffer.copy(out, 0, 1);
-        resolve(out);
+      const txBuf = Buffer.from([...cmd, ...new Array(length - cmd.length).fill(0)]);
+
+      this.spi.transfer(txBuf, txBuf.length, (e, buffer) =>{
+        // console.log('read', length, txBuf.length, '=>', e, buffer);
+        if(e){ reject(e); return; }
+        const rxBuf = buffer.slice(1); // slice creates offset view of buffer - cheep
+        // console.log('additionaly', cmd.length, buffer.length, rxBuf);
+        resolve(rxBuf);
       });
     });
   }
 
   write(cmd, buffer) {
-    console.log(cmd, buffer);
+    //console.log(cmd, buffer);
     return new Promise((resolve, reject) => {
       const txBuf = Buffer.from([_writeMask(cmd), buffer]);
       this.spi.write(txBuf, (e, buf) =>{
-        if(e){ reject(e); }
+        // console.log('write', buffer, '=>', e, buf);
+        if(e){ reject(e); return; }
         resolve(buf);
       });
     });
