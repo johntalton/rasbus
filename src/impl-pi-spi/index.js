@@ -23,12 +23,14 @@ class PiSPIImpl {
     const cmd = Array.isArray(cmdbuf) ? cmdbuf : [cmdbuf];
 
     return new Promise((resolve, reject) => {
-      const txBuf = Buffer.from([...cmd, ...new Array(length - cmd.length)]);
+      const txBuf = Buffer.from([...cmd, ...new Array(length - cmd.length).fill(0)]);
 
       this.spi.transfer(txBuf, length, (e, buffer) =>{
-        // console.log('read', length, txBuf.length, '=>', e, buffer);
+        console.log('read', length, txBuf.length, '=>', e, buffer);
         if(e){ reject(e); return; }
-        resolve(buffer);
+        const rxBuf = buffer.slice(cmd.length); // slice creates offset view of buffer - cheep
+        console.log('additionaly', cmd.length, buffer.length, rxBuf);
+        resolve(rxBuf);
       });
     });
   }
