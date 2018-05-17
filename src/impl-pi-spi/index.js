@@ -19,7 +19,7 @@ class PiSPIImpl {
   }
 
   read(cmdbuf, len) {
-    const length = len !== undefined ? len : 1;
+    const length = len !== undefined ? len + 1 : 2;
     const cmd = Array.isArray(cmdbuf) ? cmdbuf : [cmdbuf];
 
     return new Promise((resolve, reject) => {
