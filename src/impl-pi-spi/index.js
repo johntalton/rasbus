@@ -26,10 +26,10 @@ class PiSPIImpl {
       const txBuf = Buffer.from([...cmd, ...new Array(length - cmd.length).fill(0)]);
 
       this.spi.transfer(txBuf, txBuf.length, (e, buffer) =>{
-        console.log('read', length, txBuf.length, '=>', e, buffer);
+        // console.log('read', length, txBuf.length, '=>', e, buffer);
         if(e){ reject(e); return; }
         const rxBuf = buffer.slice(1); // slice creates offset view of buffer - cheep
-        console.log('additionaly', cmd.length, buffer.length, rxBuf);
+        // console.log('additionaly', cmd.length, buffer.length, rxBuf);
         resolve(rxBuf);
       });
     });
