@@ -1,38 +1,24 @@
 
+// todo move to import all and drop dynamic loader form old
+
 /**
  *
  **/
 class Rasbus {
-  static byname(name) {
-    const normalName = name.replace('-', '').toLowerCase();
-    const bus = Rasbus.busMap.find(item => item.name === normalName);
-    if(bus === undefined) { throw Error('unknown bus name: ' + normalName); }
-    if(bus._impl === undefined) {
-      bus._impl = require(bus.impl); // eslint-disable-line global-require
-    }
-    return bus._impl;
-  }
-
-  static names(type) {
-    const filtered = type === undefined ?
-      Rasbus.busMap :
-      Rasbus.busMap.filter(item => item.type === type.toLowerCase());
-    return filtered.map(item => item.name);
+  static bytype(type) {
+    return require(Rasbus.busMap // eslint-disable-line global-require
+      .filter(item => item.type === type)
+      .find(item => true).impl);
   }
 }
 
 Rasbus.busMap = [
   // I2C
-  // { name: 'raspii2c', type: 'i2c', impl: './impl-i2c-raspii2c' },
-  { name: 'i2cbus', type: 'i2c', impl: './impl-i2c-bus' },
-  //{ name: 'i2c',    type: 'i2c', impl: './impl-i2c' },  // not keeping pace with NAN
+  { name: 'i2cbus', type: 'i2c', impl: './fivdi/i2c-bus.js' },
   // SPI
-  { name: 'spidevice', type: 'spi', impl: './impl-spi-device' }, // still updated
-  { name: 'pispi', type: 'spi', impl: './impl-pi-spi' }, // old
-  //{ name: 'spi', type: 'spi', impl: './impl-spi' }, // NAN out of sync // oldest
+  { name: 'spidevice', type: 'spi', impl: './fivdi/spi-device.js' },
+  // GPIO
+  { name: 'onoff', type: 'gpio', impl: './fivdi/onoff.js'}
 ];
 
-
-
-
-module.exports = Rasbus;
+module.exports = { Rasbus };
