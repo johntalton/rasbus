@@ -27,6 +27,10 @@ class OnOffIPromise {
     const pr = Util.promisify(this.gpio.read);
     return pr();
   }
+
+  unexport() {
+    //
+  }
 }
 
-module.exports = OnOffIPromise;
+module.exports = { OnOffIPromise };

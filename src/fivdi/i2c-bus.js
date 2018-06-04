@@ -1,7 +1,7 @@
 
 const BASE_10 = 10;
 
-class I2CBusImpl {
+class I2CBus {
   static init(device, address) {
     if(!Number.isInteger(parseInt(device, BASE_10))) {
       throw new Error('not a number ' + device);
@@ -14,7 +14,7 @@ class I2CBusImpl {
 
 //console.log(bus.i2cFuncsSync());
 
-        resolve(new I2CBusImpl(bus, address));
+        resolve(new I2CBus(bus, address));
       });
     });
   }
@@ -140,5 +140,5 @@ class I2CBusImpl {
   }
 }
 
-module.exports = I2CBusImpl;
+module.exports = { I2CBus };
 

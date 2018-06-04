@@ -3,7 +3,7 @@
 
 const CLOCKHZ = 10 * 1000 * 1000; // 125000000
 
-class SpiDeviceImpl {
+class SpiDevice {
   static init(...id) {
     return new Promise((resolve, reject) => {
       if(id.length !== 2) { reject(Error('incorrect parameters ' + id)); }
@@ -13,7 +13,7 @@ class SpiDeviceImpl {
       const device = spiDev.open(id[0], id[1], { maxSpeedHz: CLOCKHZ}, err => {
         if(err) { reject(err); return; }
         console.log('hi 👍', ...id);
-        resolve(new SpiDeviceImpl(device, id));
+        resolve(new SpiDevice(device, id));
       });
     });
   }
@@ -86,5 +86,5 @@ class SpiDeviceImpl {
   }
 }
 
-module.exports = SpiDeviceImpl;
+module.exports = { SpiDevice };
 

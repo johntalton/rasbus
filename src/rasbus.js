@@ -1,24 +1,13 @@
 
-// todo move to import all and drop dynamic loader form old
+const { I2CBus } = require('./fivdi/i2c-bus.js');
+const { SpiDevice } = require('./fivdi/spi-device.js');
+const { OnOffIPromise } = require('./fivdi/onoff.js');
 
-/**
- *
- **/
 class Rasbus {
-  static bytype(type) {
-    return require(Rasbus.busMap // eslint-disable-line global-require
-      .filter(item => item.type === type)
-      .find(item => true).impl);
-  }
 }
 
-Rasbus.busMap = [
-  // I2C
-  { name: 'i2cbus', type: 'i2c', impl: './fivdi/i2c-bus.js' },
-  // SPI
-  { name: 'spidevice', type: 'spi', impl: './fivdi/spi-device.js' },
-  // GPIO
-  { name: 'onoff', type: 'gpio', impl: './fivdi/onoff.js'}
-];
+Rasbus.i2c = I2CBus;
+Rasbus.spi = SpiDevice;
+Rasbus.gpio = OnOffIPromise;
 
 module.exports = { Rasbus };
