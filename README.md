@@ -1,4 +1,4 @@
-# RasBUS
+# RasBUS (version used for multiplexing libraries)
 
 A wrapper lib for known `i2c` and `spi` implementations.
 
