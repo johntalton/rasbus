@@ -1,4 +1,3 @@
-
 const Util = require('util');
 
 /**
@@ -10,8 +9,9 @@ class OnOffIPromise {
     return OnOffIPromise.adoptGpio(gpio);
   }
 
-  static adoptGpio(gpio) {
-    return Promise.resolve(new OnOffIPromise(gpio));
+  static adoptOnOff(gpio) {
+    console.log('adopting onoff gpio');
+    return new OnOffIPromise(gpio);
   }
 
   constructor(gpio) {
@@ -19,13 +19,26 @@ class OnOffIPromise {
   }
 
   write(value) {
-    const pw =  Util.promisify(this.gpio.write);
-    return pw(value);
+    return new Promise((resolve, reject) => {
+      this.gpio.write(value, (err) => {
+        if(err) { reject(err); return; }
+        resolve();
+      });
+    });
   }
 
   read() {
-    const pr = Util.promisify(this.gpio.read);
-    return pr();
+    return new Promise((resolve, reject) => {
+      this.gpio.read((err, value) => {
+        if(err) { reject(err); return; }
+        resolve(value);
+      });
+    });
+  }
+
+  watch(cb) {
+    this.gpio.watch(cb);
+    return Promise.resolve();
   }
 
   unexport() {
