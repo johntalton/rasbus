@@ -1,12 +1,24 @@
+const onoff = require('onoff');
 
 /**
  *
  **/
 class OnOffIPromise {
   static exportGpio(pin, options) {
-    // try { const gpio = new onoff.Gpio(pin.pin)
-    // return OnOffIPromise.adoptGpio(gpio);
-    return Promise.reject(Error('exportGpio'));
+     try {
+      const gpio = new onoff.Gpio(
+        pin,
+        options.direction,
+        options.edge,
+        { activeLow: options.activeLow });
+
+      return Promise.resolve(OnOffIPromise.adoptOnOff(gpio));
+    }
+    catch(e) {
+      console.log('err', e);
+      // todo
+      return Promise.reject(e);
+    }
   }
 
   static adoptOnOff(gpio) {
