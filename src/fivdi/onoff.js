@@ -1,12 +1,12 @@
-const Util = require('util');
 
 /**
  *
  **/
 class OnOffIPromise {
   static exportGpio(pin, options) {
-    // try { const gpio = new onoff.Gpio(
-    return OnOffIPromise.adoptGpio(gpio);
+    // try { const gpio = new onoff.Gpio(pin.pin)
+    // return OnOffIPromise.adoptGpio(gpio);
+    return Promise.reject(Error('exportGpio'));
   }
 
   static adoptOnOff(gpio) {
@@ -43,6 +43,7 @@ class OnOffIPromise {
 
   unexport() {
     //
+    return Promise.reject(Error('unexport'));
   }
 }
 
