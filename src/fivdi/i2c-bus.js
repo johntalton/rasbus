@@ -121,7 +121,7 @@ class I2CBus {
     return new Promise((resolve, reject) => {
       const buf = Buffer.alloc(length);
       this.i2c.i2cRead(this._address, buf.length, buf, (err) => {
-        console.log('i2cread', length, err)
+        //console.log('i2cread', length, err)
         if(err){ reject(err); return; }
         resolve(buf);
       });
@@ -132,7 +132,7 @@ class I2CBus {
   writeBuffer(buf) {
     return new Promise((resolve, reject) => {
       this.i2c.i2cWrite(this._address, buf.length, buf, (err, bytesWritten, buffer) => {
-        console.log('i2cwrite', bytesWritten, buffer, err);
+        //console.log('i2cwrite', bytesWritten, buffer, err);
         if(err){ reject(err); return; }
         resolve();
       });
