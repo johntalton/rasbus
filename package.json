@@ -1,6 +1,6 @@
 {
   "name": "@johntalton/rasbus",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "",
   "main": "src/rasbus.js",
   "scripts": {
@@ -17,9 +17,9 @@
   },
   "homepage": "https://github.com/johntalton/rasbus#readme",
   "dependencies": {
-    "i2c-bus": "^3.2.0",
-    "onoff": "^3.1.0",
-    "spi-device": "^2.0.2"
+    "i2c-bus": "^5.1.0",
+    "onoff": "^5.0.0",
+    "spi-device": "^3.0.0"
   },
   "devDependencies": {
     "eslint": "^4.19.1"
